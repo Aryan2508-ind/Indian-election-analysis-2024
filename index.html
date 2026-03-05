@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indian Election Analysis 2024</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF671F;
+    --green:   #046A38;
+    --navy:    #0A1628;
+    --gold:    #F5A623;
+    --cream:   #FAF6EF;
+    --ink:     #0f0f0f;
+    --mid:     #666;
+    --light:   #E2D9CC;
+  }
+  /* Baki ka CSS jo aapki file mein tha... */
+  body { background: var(--cream); font-family: 'IBM Plex Mono', monospace; }
+  .masthead { background: var(--navy); color: var(--cream); padding: 2rem; }
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); }
+  .panel { border: 1px solid var(--light); padding: 1.5rem; }
+  .stat-number { font-family: 'Bebas Neue'; font-size: 3rem; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <h1><span style="color:var(--saffron)">Lok</span> Sabha 2024</h1>
+  <p>Data Analysis Project — Python · Pandas · Matplotlib</p>
+</header>
+
+<div class="grid">
+  <div class="panel" style="grid-column: span 3;">
+    <div class="stat-number" style="color:var(--saffron)">543</div>
+    <p>Total Seats</p>
+  </div>
+  
+  <div class="panel" style="grid-column: span 9;">
+    <h3>Seats Won — Top Parties</h3>
+    <div id="barChart"></div>
+  </div>
+</div>
+
+<script>
+  // Ye data aap analysis.py se nikal kar yahan update karenge
+  const parties = [
+    { name: "BJP", seats: 240, color: '#FF671F' },
+    { name: "INC", seats: 99, color: '#1565C0' },
+    { name: "SP", seats: 37, color: '#E53935' }
+  ];
+
+  const barChart = document.getElementById('barChart');
+  parties.forEach(p => {
+    barChart.innerHTML += <div style="margin:10px 0;">
+      ${p.name}: <div style="background:${p.color}; width:${p.seats/3}%; height:20px; display:inline-block;"></div> ${p.seats}
+    </div>;
+  });
+</script>
+</body>
+</html>
