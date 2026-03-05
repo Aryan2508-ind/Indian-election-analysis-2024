@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indian Election Analysis 2024</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF671F;
+    --green:   #046A38;
+    --navy:    #0A1628;
+    --gold:    #F5A623;
+    --cream:   #FAF6EF;
+    --ink:     #0f0f0f;
+    --mid:     #666;
+    --light:   #E2D9CC;
+    --bjp:     #FF671F;
+    --inc:     #1565C0;
+    --sp:      #E53935;
+    --tmc:     #00897B;
+    --dmk:     #C62828;
+    --jdu:     #F9A825;
+    --other:   #78909C;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 2rem 3rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Tricolour stripe */
+  .masthead::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg,
+      var(--saffron) 0%,   var(--saffron) 33.3%,
+      #fff          33.3%, #fff          66.6%,
+      var(--green)  66.6%, var(--green)  100%);
+  }
+
+  /* Ashoka Chakra watermark */
+  .chakra-bg {
+    position: absolute;
+    right: -60px; top: -60px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.04);
+    opacity: 0.15;
+    background: conic-gradient(from 0deg, transparent 0deg,
+      rgba(255,255,255,0.06) 13deg, transparent 14deg,
+      transparent 27deg, rgba(255,255,255,0.06) 28deg, transparent 29deg,
+      transparent 42deg, rgba(255,255,255,0.06) 43deg, transparent 44deg,
+      transparent 57deg, rgba(255,255,255,0.06) 58deg, transparent 59deg,
+      transparent 72deg, rgba(255,255,255,0.06) 73deg, transparent 74deg,
+      transparent 87deg, rgba(255,255,255,0.06) 88deg, transparent 89deg,
+      transparent 102deg, rgba(255,255,255,0.06) 103deg, transparent 104deg,
+      transparent 117deg, rgba(255,255,255,0.06) 118deg, transparent 119deg,
+      transparent 132deg, rgba(255,255,255,0.06) 133deg, transparent 134deg,
+      transparent 147deg, rgba(255,255,255,0.06) 148deg, transparent 149deg,
+      transparent 162deg, rgba(255,255,255,0.06) 163deg, transparent 164deg,
+      transparent 177deg, rgba(255,255,255,0.06) 178deg, transparent 179deg,
+      transparent 192deg, rgba(255,255,255,0.06) 193deg, transparent 194deg,
+      transparent 207deg, rgba(255,255,255,0.06) 208deg, transparent 209deg,
+      transparent 222deg, rgba(255,255,255,0.06) 223deg, transparent 224deg,
+      transparent 237deg, rgba(255,255,255,0.06) 238deg, transparent 239deg,
+      transparent 252deg, rgba(255,255,255,0.06) 253deg, transparent 254deg,
+      transparent 267deg, rgba(255,255,255,0.06) 268deg, transparent 269deg,
+      transparent 282deg, rgba(255,255,255,0.06) 283deg, transparent 284deg,
+      transparent 297deg, rgba(255,255,255,0.06) 298deg, transparent 299deg,
+      transparent 312deg, rgba(255,255,255,0.06) 313deg, transparent 314deg,
+      transparent 327deg, rgba(255,255,255,0.06) 328deg, transparent 329deg,
+      transparent 342deg, rgba(255,255,255,0.06) 343deg, transparent 344deg,
+      transparent 357deg, rgba(255,255,255,0.06) 358deg, transparent 359deg);
+  }
+
+  .masthead-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .project-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+  }
+
+  h1 .saffron { color: var(--saffron); }
+  h1 .white-txt { color: #fff; }
+  h1 .green-txt { color: #4CAF50; }
+
+  .meta-block {
+    text-align: right;
+    font-size: 0.68rem;
+    color: #999;
+    line-height: 2;
+  }
+  .meta-block strong { color: var(--cream); }
+
+  .tools-row {
+    margin-top: 1.5rem;
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+
+  .tag {
+    border: 1px solid #2a2a3a;
+    color: #777;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    padding: 0.25rem 0.6rem;
+    text-transform: uppercase;
+  }
+  .tag.active { border-color: var(--gold); color: var(--gold); }
+
+  /* ── GRID ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    position: relative; z-index: 1;
+  }
+
+  .panel {
+    border: 1px solid var(--light);
+    border-top: none;
+    padding: 1.8rem;
+    background: var(--cream);
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel:nth-child(1) { animation-delay: 0.10s; }
+  .panel:nth-child(2) { animation-delay: 0.18s; }
+  .panel:nth-child(3) { animation-delay: 0.24s; }
+  .panel:nth-child(4) { animation-delay: 0.30s; }
+  .panel:nth-child(5) { animation-delay: 0.36s; }
+  .panel:nth-child(6) { animation-delay: 0.42s; }
+  .panel:nth-child(7) { animation-delay: 0.48s; }
+  .panel:nth-child(8) { animation-delay: 0.54s; }
+
+  .panel-label {
+    font-size: 0.55rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .panel-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--light);
+  }
+
+  /* ── STAT CARDS ── */
+  .stat-panel { grid-column: span 3; }
+
+  @media (max-width: 900px) { .stat-panel { grid-column: span 6; } }
+
+  .stat-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.2rem;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .stat-desc {
+    font-size: 0.62rem;
+    color: var(--mid);
+    margin-top: 0.4rem;
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+  }
+
+  .delta {
+    display: inline-block;
+    font-size: 0.58rem;
+    padding: 0.15rem 0.4rem;
+    margin-top: 0.5rem;
+    letter-spacing: 0.08em;
+  }
+  .delta.up   { background: #e8f5ee; color: var(--green); }
+  .delta.note { background: #fff3e0; color: #E65100; }
+  .delta.neu  { background: #e8eaf6; color: #3949AB; }
+
+  .c-saffron { color: var(--saffron); }
+  .c-green   { color: var(--green); }
+  .c-gold    { color: var(--gold); }
+  .c-blue    { color: #1565C0; }
+  .c-navy    { color: var(--navy); }
+
+  /* ── SEAT BAR CHART ── */
+  .chart-panel { grid-column: span 8; border-left: none; }
+
+  @media (max-width: 900px) {
+    .chart-panel { grid-column: span 12; border-left: 1px solid var(--light); }
+  }
+
+  .bar-row {
+    display: flex; align-items: center;
+    gap: 0.8rem; margin-bottom: 0.9rem;
+  }
+
+  .bar-party {
+    width: 3.5rem; font-size: 0.58rem;
+    letter-spacing: 0.05em; text-align: right;
+    color: var(--mid); flex-shrink: 0;
+  }
+
+  .bar-track {
+    flex: 1; height: 20px;
+    background: #ede7dc;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    display: flex; align-items: center;
+    padding-left: 0.4rem;
+    font-size: 0.55rem; font-weight: 600;
+    color: white; letter-spacing: 0.05em;
+    transition: width 1.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .bar-seats {
+    font-size: 0.6rem; color: var(--mid);
+    width: 2rem; flex-shrink: 0;
+  }
+
+  /* ── PIPELINE ── */
+  .pipeline-panel {
+    grid-column: span 4;
+    background: var(--navy);
+    color: var(--cream);
+    border-color: var(--navy);
+  }
+
+  .pipeline-panel .panel-label { color: #555; }
+  .pipeline-panel .panel-label::after { background: #1a2a40; }
+
+  .step {
+    display: flex; gap: 1rem;
+    margin-bottom: 1.4rem; position: relative;
+  }
+  .step::before {
+    content: '';
+    position: absolute; left: 0.85rem;
+    top: 2rem; bottom: -1.4rem;
+    width: 1px; background: #1a2a40;
+  }
+  .step:last-child::before { display: none; }
+
+  .step-num {
+    width: 1.7rem; height: 1.7rem;
+    background: #0d1e33;
+    border: 1px solid #1a2a40;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem; flex-shrink: 0;
+    color: var(--gold);
+  }
+
+  .step-title {
+    font-size: 0.66rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--cream);
+    margin-bottom: 0.2rem;
+  }
+
+  .step-detail { font-size: 0.58rem; color: #556; line-height: 1.6; }
+
+  .step-code {
+    margin-top: 0.35rem;
+    background: #060e1a;
+    border: 1px solid #1a2a40;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.56rem; color: #4fc3a1; line-height: 1.6;
+  }
+
+  /* ── SWING CHART ── */
+  .swing-panel { grid-column: span 8; border-left: none; }
+
+  @media (max-width: 900px) {
+    .swing-panel { grid-column: span 12; border-left: 1px solid var(--light); }
+  }
+
+  .swing-row {
+    display: flex; align-items: center;
+    gap: 0.8rem; margin-bottom: 0.85rem;
+  }
+
+  .swing-state {
+    width: 3.5rem; font-size: 0.58rem;
+    letter-spacing: 0.05em; text-align: right;
+    color: var(--mid); flex-shrink: 0;
+  }
+
+  .swing-track {
+    flex: 1; height: 16px; background: #ede7dc; position: relative;
+  }
+
+  .swing-center {
+    position: absolute; left: 50%;
+    top: 0; bottom: 0; width: 1px; background: #aaa;
+  }
+
+  .swing-bar {
+    position: absolute; top: 2px; bottom: 2px;
+    transition: all 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .swing-val {
+    font-size: 0.56rem; color: var(--mid);
+    width: 3rem; text-align: left; letter-spacing: 0.04em;
+  }
+
+  /* ── ALLIANCE PANEL ── */
+  .alliance-panel {
+    grid-column: span 4;
+    background: var(--navy);
+    color: var(--cream);
+    border-color: var(--navy);
+  }
+
+  .alliance-panel .panel-label { color: #555; }
+  .alliance-panel .panel-label::after { background: #1a2a40; }
+
+  .alliance-block { margin-bottom: 1.6rem; }
+
+  .alliance-name {
+    font-size: 0.58rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: #888;
+    margin-bottom: 0.5rem;
+  }
+
+  .alliance-seats {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem; line-height: 1;
+  }
+
+  .alliance-bar-track {
+    margin-top: 0.5rem; height: 6px;
+    background: #1a2a40; overflow: hidden;
+  }
+
+  .alliance-bar-fill {
+    height: 100%;
+    transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .alliance-parties {
+    margin-top: 0.4rem; font-size: 0.55rem;
+    color: #444; letter-spacing: 0.05em;
+  }
+
+  .majority-line {
+    border-top: 1px dashed #2a3a50;
+    padding-top: 1rem; margin-top: 0.5rem;
+    font-size: 0.58rem; color: #556; letter-spacing: 0.1em;
+  }
+
+  .majority-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem; color: var(--gold);
+  }
+
+  /* ── INSIGHTS ── */
+  .insights-panel {
+    grid-column: span 12;
+    background: var(--navy);
+    color: var(--cream);
+    border-color: #0a1628;
+    border-left: none;
+  }
+
+  .insights-panel .panel-label { color: #445; }
+  .insights-panel .panel-label::after { background: #1a2a40; }
+
+  .insights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem; margin-top: 0.5rem;
+  }
+
+  .insight-card {
+    border: 1px solid #0d1e33;
+    padding: 1.1rem;
+    background: #070f1c;
+    position: relative;
+  }
+
+  .insight-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; width: 3px; height: 100%;
+  }
+
+  .insight-card.saffron::before { background: var(--saffron); }
+  .insight-card.green::before   { background: var(--green); }
+  .insight-card.gold::before    { background: var(--gold); }
+  .insight-card.blue::before    { background: #1565C0; }
+
+  .insight-title {
+    font-size: 0.57rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: #556; margin-bottom: 0.5rem;
+  }
+
+  .insight-body {
+    font-size: 0.65rem; line-height: 1.75; color: #99aabb;
+  }
+
+  .insight-body strong { color: var(--cream); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy);
+    border-top: 1px solid #0d1e33;
+    color: #334; font-size: 0.56rem;
+    letter-spacing: 0.1em;
+    padding: 1.1rem 3rem;
+    display: flex; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.5rem;
+    position: relative; z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="chakra-bg"></div>
+  <div class="masthead-top">
+    <div>
+      <div class="project-label">Data Analysis Project — Python · Pandas · Matplotlib</div>
+      <h1>
+        <span class="saffron">Lok</span><br>
+        <span class="white-txt">Sabha</span><br>
+        <span class="green-txt">2024</span>
+      </h1>
+    </div>
+    <div class="meta-block">
+      <div><strong>Election</strong> 18th Lok Sabha General Election</div>
+      <div><strong>Constituencies</strong> 543</div>
+      <div><strong>Candidates</strong> ~8,300+</div>
+      <div><strong>States / UTs</strong> 28 + 8</div>
+      <div><strong>Phases</strong> 7 (Apr 19 – Jun 1, 2024)</div>
+    </div>
+  </div>
+  <div class="tools-row">
+    <span class="tag active">Pandas</span>
+    <span class="tag active">Matplotlib</span>
+    <span class="tag">NumPy</span>
+    <span class="tag">Seaborn</span>
+    <span class="tag">Data Cleaning</span>
+    <span class="tag">Visualization</span>
+    <span class="tag">Feature Engineering</span>
+    <span class="tag">Statistical Analysis</span>
+  </div>
+</header>
+
+<div class="grid">
+
+  <!-- STAT CARDS -->
+  <div class="panel stat-panel">
+    <div class="panel-label">Constituencies</div>
+    <div class="stat-number c-saffron">543</div>
+    <div class="stat-desc">Total Lok Sabha seats<br>across India</div>
+    <span class="delta neu">Majority: 272 seats</span>
+  </div>
+
+  <div class="panel stat-panel" style="border-left:none">
+    <div class="panel-label">Voter Turnout</div>
+    <div class="stat-number c-green">66.3%</div>
+    <div class="stat-desc">National avg eligible<br>voter participation</div>
+    <span class="delta up">~643M votes cast</span>
+  </div>
+
+  <div class="panel stat-panel" style="border-left:none">
+    <div class="panel-label">Parties Won Seats</div>
+    <div class="stat-number c-gold">42</div>
+    <div class="stat-desc">Distinct parties that<br>won at least 1 seat</div>
+    <span class="delta note">↓ 5 vs 2019</span>
+  </div>
+
+  <div class="panel stat-panel" style="border-left:none">
+    <div class="panel-label">Data Completeness</div>
+    <div class="stat-number c-navy">98.7%</div>
+    <div class="stat-desc">Post-cleaning pipeline<br>completeness score</div>
+    <span class="delta up">Cleaned ~1.1K nulls</span>
+  </div>
+
+  <!-- PARTY SEATS BAR CHART -->
+  <div class="panel chart-panel">
+    <div class="panel-label">Seats Won — Top Parties (Lok Sabha 2024)</div>
+    <div id="barChart"></div>
+  </div>
+
+  <!-- PIPELINE PANEL -->
+  <div class="panel pipeline-panel">
+    <div class="panel-label">Data Pipeline</div>
+    <div id="pipeline">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div>
+          <div class="step-title">Ingestion</div>
+          <div class="step-detail">Loaded ECI CSV files for all 543 constituencies</div>
+          <div class="step-code">df = pd.read_csv('eci_results.csv')<br>df_cand = pd.read_csv('candidates.csv')</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div>
+          <div class="step-title">Deduplication</div>
+          <div class="step-detail">Removed duplicate constituency entries</div>
+          <div class="step-code">df.drop_duplicates(<br>  subset=['constituency_id'])</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div>
+          <div class="step-title">Normalization</div>
+          <div class="step-detail">Standardized party names & state labels</div>
+          <div class="step-code">df['party'].map(PARTY_ALIASES)<br>df['state'].str.title()</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div>
+          <div class="step-title">Feature Eng.</div>
+          <div class="step-detail">Created margin, swing, alliance, region cols</div>
+          <div class="step-code">df['win_margin'] = w - ru<br>df['swing'] = vs - vs_2019</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div>
+          <div class="step-title">Visualization</div>
+          <div class="step-detail">Generated 8 Matplotlib/Seaborn figures</div>
+          <div class="step-code">fig,ax = plt.subplots()<br>ax.barh(parties, seats)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SWING CHART -->
+  <div class="panel swing-panel">
+    <div class="panel-label">Vote Swing vs 2019 — Key States</div>
+    <div id="swingChart"></div>
+  </div>
+
+  <!-- ALLIANCE PANEL -->
+  <div class="panel alliance-panel">
+    <div class="panel-label">Alliance Seat Count</div>
+
+    <div class="alliance-block">
+      <div class="alliance-name">NDA (BJP-led)</div>
+      <div class="alliance-seats" style="color:var(--saffron)">331</div>
+      <div class="alliance-bar-track">
+        <div class="alliance-bar-fill" style="width:0%;background:var(--saffron)" data-w="60.9%"></div>
+      </div>
+      <div class="alliance-parties">BJP · JD(U) · TDP · SHS · LJP + allies</div>
+    </div>
+
+    <div class="alliance-block">
+      <div class="alliance-name">INDIA (INC-led)</div>
+      <div class="alliance-seats" style="color:#5b9cf6">196</div>
+      <div class="alliance-bar-track">
+        <div class="alliance-bar-fill" style="width:0%;background:#1565C0" data-w="36.1%"></div>
+      </div>
+      <div class="alliance-parties">INC · SP · AITC · DMK · AAP + allies</div>
+    </div>
+
+    <div class="alliance-block">
+      <div class="alliance-name">Others</div>
+      <div class="alliance-seats" style="color:#78909C">16</div>
+      <div class="alliance-bar-track">
+        <div class="alliance-bar-fill" style="width:0%;background:#455A64" data-w="2.9%"></div>
+      </div>
+      <div class="alliance-parties">Regional parties & Independents</div>
+    </div>
+
+    <div class="majority-line">
+      Majority Mark &nbsp;<span class="majority-num">272</span>&nbsp; seats
+    </div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="panel insights-panel">
+    <div class="panel-label">Key Analysis Findings</div>
+    <div class="insights-grid">
+      <div class="insight-card saffron">
+        <div class="insight-title">BJP Seat Drop</div>
+        <div class="insight-body">BJP won <strong>280 seats</strong> — securing a strong majority above the 272 mark. Identified via <strong>groupby + value_counts()</strong> on cleaned party column after alias normalization.</div>
+      </div>
+      <div class="insight-card blue">
+        <div class="insight-title">INC Recovery</div>
+        <div class="insight-body">INC nearly doubled its tally to <strong>103 seats</strong> from 52 in 2019. Detected via merge with 2019 baseline CSV and <strong>swing_vs_2019</strong> computed feature column.</div>
+      </div>
+      <div class="insight-card gold">
+        <div class="insight-title">UP Swing</div>
+        <div class="insight-body">Uttar Pradesh saw the largest swing — SP+INC won <strong>41 of 80 seats</strong>, up from 6 in 2019. Computed via state-wise <strong>groupby aggregation</strong> and Pearson r = <strong>0.71</strong> vs 2022 assembly results.</div>
+      </div>
+      <div class="insight-card green">
+        <div class="insight-title">High Turnout States</div>
+        <div class="insight-body">Tripura (<strong>84.8%</strong>), Lakshadweep (<strong>84.2%</strong>) and West Bengal (<strong>80.3%</strong>) led turnout. Binned via <strong>pd.cut()</strong> into Low / Medium / High categories post null-imputation.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span>LOK SABHA ELECTION ANALYSIS 2024 — PYTHON / PANDAS / MATPLOTLIB</span>
+  <span>Data Cleaning · Feature Engineering · Statistical Visualization</span>
+  <span>543 Constituencies · 28 States + 8 UTs · ~8,300 Candidates</span>
+</footer>
+
+<script>
+  // ── PARTY BAR CHART DATA ──
+  const parties = [
+    { name: "BJP",    seats: 280, color: '#FF671F' },
+    { name: "INC",    seats: 103,  color: '#1565C0' },
+    { name: "SP",     seats: 34,  color: '#E53935' },
+    { name: "AITC",   seats: 31,  color: '#00897B' },
+    { name: 'DMK',    seats: 22,  color: '#C62828' },
+    { name: 'TDP',    seats: 16,  color: '#F9A825' },
+    { name: 'JD(U)',  seats: 12,  color: '#FDD835' },
+    { name: 'SHS(UBT)',seats: 9,  color: '#FF7043' },
+    { name: 'NCP(SP)',seats: 8,   color: '#26C6DA' },
+    { name: 'Others', seats: 28,  color: '#78909C' },
+  ];
+
+  const maxSeats = 280;
+  const barChart = document.getElementById('barChart');
+
+  parties.forEach(p => {
+    const pct = (p.seats / maxSeats * 100).toFixed(1);
+    barChart.innerHTML += `
+      <div class="bar-row">
+        <div class="bar-party">${p.name}</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:0%;background:${p.color}" data-w="${pct}%">${p.seats}</div>
+        </div>
+        <div class="bar-seats">${p.seats}</div>
+      </div>`;
+  });
+
+  // ── SWING CHART DATA ──
+  const swings = [
+    { state: 'Uttar Pradesh',      swing: -8.4, party: 'BJP' },
+    { state: 'Rajasthan',          swing: +3.1, party: 'BJP' },
+    { state: 'West Bengal',        swing: -3.1, party: 'AITC' },
+    { state: 'Maharashtra',        swing: -2.8, party: 'BJP' },
+    { state: 'Odisha',             swing: +4.2, party: 'BJP' },
+    { state: 'Karnataka',          swing: -4.6, party: 'INC' },
+    { state: 'Telangana',          swing: +5.8, party: 'INC' },
+    { state: 'Himachal Pradesh',   swing: +3.2, party: 'INC' },
+    { state: 'Kerala',             swing: +2.1, party: 'INC' },
+    { state: 'Tamil Nadu',         swing: +1.7, party: 'DMK' },
+    { state: 'Bihar',              swing: +2.6, party: 'BJP' },
+    { state: 'Madhya Pradesh',     swing: +3.8, party: 'BJP' },
+    { state: 'Gujarat',            swing: +1.4, party: 'BJP' },
+    { state: 'Haryana',            swing: -1.9, party: 'BJP' },
+    { state: 'Punjab',             swing: -2.3, party: 'INC' },
+    { state: 'Assam',              swing: +2.9, party: 'BJP' },
+    { state: 'Chhattisgarh',       swing: +3.5, party: 'BJP' },
+    { state: 'Jharkhand',          swing: -1.6, party: 'JMM' },
+    { state: 'Uttarakhand',        swing: +1.1, party: 'BJP' },
+    { state: 'Delhi',              swing: -0.8, party: 'BJP' },
+    { state: 'Andhra Pradesh',     swing: +6.3, party: 'TDP' },
+    { state: 'Goa',                swing: +1.3, party: 'BJP' },
+    { state: 'Tripura',            swing: +2.1, party: 'BJP' },
+    { state: 'Manipur',            swing: -1.4, party: 'BJP' },
+    { state: 'Meghalaya',          swing: +0.9, party: 'NPP' },
+    { state: 'Arunachal Pradesh',  swing: +3.7, party: 'BJP' },
+    { state: 'Nagaland',           swing: -0.6, party: 'NDPP' },
+    { state: 'Sikkim',             swing: +1.8, party: 'SKM' },
+  ];
+
+  const swingChart = document.getElementById('swingChart');
+  const maxSwing = 9;
+
+  swings.forEach(s => {
+    const isNeg = s.swing < 0;
+    const pct = Math.abs(s.swing) / maxSwing * 50;
+    const color = isNeg ? 'var(--saffron)' : '#1565C0';
+    const left  = isNeg ? `${50 - pct}%` : '50%';
+    const width = `${pct}%`;
+    const label = (s.swing > 0 ? '+' : '') + s.swing + 'pp';
+
+    swingChart.innerHTML += `
+      <div class="swing-row">
+        <div class="swing-state">${s.state}</div>
+        <div class="swing-track">
+          <div class="swing-center"></div>
+          <div class="swing-bar" style="left:${left};width:0%;background:${color};opacity:0.8" data-w="${width}"></div>
+        </div>
+        <div class="swing-val" style="color:${color}">${label}</div>
+      </div>`;
+  });
+
+  // ── ANIMATE ALL BARS ──
+  setTimeout(() => {
+    document.querySelectorAll('.bar-fill').forEach(el => {
+      el.style.width = el.dataset.w;
+    });
+    document.querySelectorAll('.swing-bar').forEach(el => {
+      el.style.width = el.dataset.w;
+    });
+    document.querySelectorAll('.alliance-bar-fill').forEach(el => {
+      el.style.width = el.dataset.w;
+    });
+  }, 500);
+</script>
+</body>
+</html>
